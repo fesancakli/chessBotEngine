@@ -1,4 +1,3 @@
-// bitboard.cpp
 #include "bitboard.h"
 #include <iostream>
 

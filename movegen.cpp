@@ -1,4 +1,3 @@
-// movegen.cpp
 #include "movegen.h"
 #include "bitboard.h"
 #include <iostream>
