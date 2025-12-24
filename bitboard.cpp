@@ -1,7 +1,6 @@
 #include "bitboard.h"
 #include <iostream>
 
-// Global değişkenin GERÇEK tanımı buradadır
 Bitboard bitboards[12];
 int enpassant_square = -1;
 

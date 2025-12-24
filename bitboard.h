@@ -4,9 +4,9 @@
 #include "defs.h"
 #include <iostream>
 
-// Platforma göre gerekli kütüphaneler
+
 #ifdef _MSC_VER
-#include <intrin.h> // Sadece Visual Studio ise bunu ekle
+#include <intrin.h>
 #endif
 
 static inline void set_bit(Bitboard &bb, int square) {

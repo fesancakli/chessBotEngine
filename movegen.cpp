@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstring>
 
-// Global saldırı tablolarının tanımları
+
 Bitboard knight_attacks[64];
 Bitboard king_attacks[64];
 Bitboard pawn_attacks[2][64];

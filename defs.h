@@ -3,10 +3,8 @@
 
 #include <cstdint>
 
-// Temel Veri Tipi
 typedef uint64_t Bitboard;
 
-// Makrolar
 #define encode_move(source, target, piece, capture, double_push, enpassant, castling) \
 (source) | (target << 6) | (piece << 12) | (capture << 16) | (double_push << 17) | (enpassant << 18) | (castling << 19)
 
@@ -15,7 +13,7 @@ typedef uint64_t Bitboard;
 #define get_move_piece(move) ((move & 0xf000) >> 12)
 #define get_move_capture(move) (move & 0x10000)
 
-// Enumlar
+
 enum { P, N, B, R, Q, K, p, n, b, r, q, k };
 
 enum {
@@ -29,14 +27,13 @@ enum {
     a8, b8, c8, d8, e8, f8, g8, h8
 };
 
-// Yapılar
+
 typedef struct {
     int moves[256];
     int count;
 } moves;
 
-// Global Değişkenlerin Haberini Veriyoruz (extern)
-// Gerçek tanımları .cpp dosyalarında olacak
+
 extern Bitboard bitboards[12];
 extern Bitboard knight_attacks[64];
 extern Bitboard king_attacks[64];
