@@ -3,6 +3,7 @@
 
 // Global değişkenin GERÇEK tanımı buradadır
 Bitboard bitboards[12];
+int enpassant_square = -1;
 
 void reset_bitboards() {
     for (int i = 0; i < 12; i++) {

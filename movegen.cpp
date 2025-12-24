@@ -250,7 +250,14 @@ void generate_moves(int side, moves *move_list) {
             move_list->count++;
             clear_bit(attacks , target_index);
         }
-
+        if (enpassant_square != -1) {
+            Bitboard enpassant_attack = pawn_attacks[side][source_index] & (1ULL << enpassant_square);
+            if (enpassant_attack) {
+                int move = encode_move(source_index, enpassant_square, piece, 1, 0, 1, 0);
+                move_list->moves[move_list->count] = move;
+                move_list->count++;
+            }
+        }
         clear_bit(copy_board, source_index);
 
     }
@@ -313,34 +320,64 @@ int make_move(int move , int side) {
     int target_index = get_move_target(move);
     int captured = get_move_capture(move);
     int piece = get_move_piece(move);
+    int double_push = (move & 0x20000) ? 1 : 0;
+    int enpassant   = (move & 0x40000) ? 1 : 0;
+
+    int enpassant_copy = enpassant_square;
 
     clear_bit(bitboards[piece], source_index);
     set_bit(bitboards[piece], target_index);
 
     if (captured) {
-        int start_piece, end_piece;
-        if (side == 0) {
-            start_piece = p; end_piece = k;
-        } else {
-            start_piece = P; end_piece = K;
+        if (enpassant) {
+            int pawn_to_remove = side == 0 ? target_index - 8 : target_index + 8;
+            clear_bit(bitboards[(side == 0) ? p : P], pawn_to_remove);
         }
+        else{
+            int start_piece, end_piece;
+            if (side == 0) {
+                start_piece = p; end_piece = k;
+            } else {
+                start_piece = P; end_piece = K;
+            }
 
-        for (int bb_piece = start_piece; bb_piece <= end_piece; bb_piece++) {
-            if (get_bit(bitboards[bb_piece], target_index)) {
-                clear_bit(bitboards[bb_piece], target_index);
-                break;
+            for (int bb_piece = start_piece; bb_piece <= end_piece; bb_piece++) {
+                if (get_bit(bitboards[bb_piece], target_index)) {
+                    clear_bit(bitboards[bb_piece], target_index);
+                    break;
+                }
             }
         }
     }
 
+    if ((piece == P) and (target_index >= 56)) {
+        clear_bit(bitboards[piece], target_index);
+        set_bit(bitboards[Q], target_index);
+    }
+    if ((piece == p) and (target_index <= 7)) {
+        clear_bit(bitboards[piece], target_index);
+        set_bit(bitboards[q], target_index);
+    }
+
+    if (double_push) {
+        if (side == 0) enpassant_square = target_index - 8;
+        else enpassant_square = target_index + 8;
+    }
+    else {
+        enpassant_square = -1;
+    }
+
+
     int king_square = get_lsb_index(bitboards[(side == 0) ? K : k]);
 
     if (is_square_attacked(king_square, side ^ 1)) {
-        memcpy(bitboards, bitboards_copy, 96);
+        memcpy(bitboards, bitboards_copy, sizeof(bitboards));
+        enpassant_square = enpassant_copy;
         return 0;
     }
 
-    memcpy(bitboards, bitboards_copy, 96);
+    memcpy(bitboards, bitboards_copy, sizeof(bitboards));
+    enpassant_square = enpassant_copy;
 
     return 1;
 }

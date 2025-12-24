@@ -41,6 +41,7 @@ extern Bitboard bitboards[12];
 extern Bitboard knight_attacks[64];
 extern Bitboard king_attacks[64];
 extern Bitboard pawn_attacks[2][64];
+extern int enpassant_square;
 
 
 #define copy_board() \
